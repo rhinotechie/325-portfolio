@@ -1,5 +1,9 @@
 # Bruteforce approach
 def checkPalindrome_1(string, k):
+    # Not a palindrome if empty.
+    if string == "":
+        return False
+
     # Is the current substring a palindrome?
     if string == string[::-1]:
         return True
