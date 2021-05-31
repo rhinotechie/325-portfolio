@@ -1,16 +1,21 @@
 # Bruteforce approach
 def checkPalindrome_1(string, k):
+    # Is the current substring a palindrome?
     if string == string[::-1]:
         return True
 
-    # Checks if this substring is a palindrome for at least one child substring up to k characters removed from original
+    # Checks if substring is a palindrome for at least one child substring up to k characters removed from original
+    results = []
     if k > 0:
         for position in range(0, len(string)):
-            sub_string = string[position - 1:] + string[position:]
-            checkPalindrome_1(sub_string, k - 1)
+            sub_string = string[:position] + string[position + 1:]
+            results.append(checkPalindrome_1(sub_string, k - 1))
 
     # No matches found
-    return False
+    if True in results:
+        return True
+    else:
+        return False
 
 
 # Improved
