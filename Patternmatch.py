@@ -1,7 +1,7 @@
 # This function assumes that 'string' does not have '?' or '*' inside of it, only 'p'
 def patternmatch(string, p):
     # Base case: a matching pattern is found
-    if (p == "" and string == "") or p == string:
+    if p == "" and string == "":
         return True
 
     # Case where p possibly has only '*'s left while string is empty.
