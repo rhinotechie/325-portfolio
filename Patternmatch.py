@@ -1,10 +1,15 @@
 # This function assumes that 'string' does not have '?' or '*' inside of it, only 'p'
 def patternmatch(string, p):
-    # Base case
-    if (p == "" and string == "") or p == string or (p == "*" and string == ""):
+    # Base case: a matching pattern is found
+    if (p == "" and string == "") or p == string:
         return True
-    
-    if p == "" or (string == "" and p != "*"):
+
+    # Case where p possibly has only '*'s left while string is empty.
+    if string == "" and p[0] == "*":
+        return patternmatch("", p[1:])
+
+    # If string still has remaining characters or there are leftover '?' in 'p'.
+    if p == "" or (p[0] == '?' and string == ""):
         return False
 
     # Do the first characters match?
