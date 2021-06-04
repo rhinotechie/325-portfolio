@@ -27,6 +27,18 @@ class MyTestCase(unittest.TestCase):
         grid_matrix = [[-10, 5, -6]]
         self.assertEqual(12, getTesla(grid_matrix))
 
+    def test_personal6(self):
+        grid_matrix = [[-10], [5], [-6]]
+        self.assertEqual(12, getTesla(grid_matrix))
+
+    def test_personal7(self):
+        grid_matrix = [[1, -10, 49], [9, 5, 51], [25, 25, -100]]
+        self.assertEqual(10, getTesla(grid_matrix))
+
+    def test_personal8(self):
+        grid_matrix = [[-10, -10, 100], [-30, -10, -1000], [9, -10, -10]]
+        self.assertEqual(51, getTesla(grid_matrix))
+
 
 if __name__ == '__main__':
     unittest.main()
