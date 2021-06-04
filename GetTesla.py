@@ -1,3 +1,6 @@
+import sys
+
+
 def getTesla(M):
     nodes = {}  # Maps nodes to current path health and minimum health needed to get there
 
@@ -40,30 +43,31 @@ def getTesla(M):
 
 
 def getTesla2(M):
-    minimum_hp = 1
+    minimum_hp = sys.maxsize
     node_stack = [(0, 0)]
+    cost_stack = []
+    minimum_stack = []
     nodes = {}
 
     # Sets minimum health needed for first position.
     if M[0][0] <= 0:
-        nodes[(0, 0)] = [1, M[0][0] * -1 + 1]
+        minimum_stack.append(M[0][0] * -1 + 1)
+        cost_stack.append(1)
     else:
-        nodes[(0, 0)] = [M[0][0] + 1, 1]
+        minimum_stack.append(1)
+        cost_stack.append(M[0][0] + 1)
 
     # Uses a stack to iterate over every possible path while preserving the lowest possible health required.
     while len(node_stack) > 0:
         # Eastern node
         if node_stack[-1][0] + 1 < len(M[0]):
             # Updates eastern node's path cost coming from this node.
-            nodes[(node_stack[-1][0] + 1, node_stack[-1][1])] = [nodes[(node_stack[-1][0], node_stack[-1][1])][0] +
-                                                                M[node_stack[-1][1]][node_stack[-1][0] + 1],
-                                                                nodes[(node_stack[-1][0], node_stack[-1][1])][1]]
-
-            # If the eastern node's path cost would cause Mr. X to die, updates both minimal health and path cost.
-            if nodes[(node_stack[-1][0] + 1, node_stack[-1][1])][0] <= 0:
-                nodes[(node_stack[-1][0] + 1, node_stack[-1][1])][1] += nodes[(node_stack[-1][0] + 1,
-                                                                               node_stack[-1][1])][0] * -1 + 1
-                nodes[(node_stack[-1][0] + 1, node_stack[-1][1])][0] = 1
+            cost_stack.append(cost_stack[-1] + M[node_stack[-1][1]][node_stack[-1][0] + 1])
+            if cost_stack[-1] <= 0:
+                minimum_stack.append(minimum_stack[-1] + cost_stack[-1] * -1 + 1)
+                cost_stack[-1] = 1
+            else:
+                minimum_stack.append(minimum_stack[-1])
 
             node_stack.append((node_stack[-1][0] + 1, node_stack[-1][1]))
             continue
@@ -71,25 +75,24 @@ def getTesla2(M):
         # Southern node
         if node_stack[-1][1] + 1 < len(M):
             # Updates southern node's path cost coming from this node.
-            nodes[(node_stack[-1][0], node_stack[-1][1] + 1)] = [nodes[(node_stack[-1][0], node_stack[-1][1])][0] +
-                                                                    M[node_stack[-1][1] + 1][node_stack[-1][0]],
-                                                                    node_stack[-1][1]]
-
-            # If the southern node's path cost would cause Mr. X to die, updates both minimal health and path cost.
-            if nodes[(node_stack[-1][0], node_stack[-1][1] + 1)][0] <= 0:
-                nodes[(node_stack[-1][0], node_stack[-1][1] + 1)][1] += nodes[(node_stack[-1][0],
-                                                                               node_stack[-1][1] + 1)][0] * -1 + 1
-                nodes[(node_stack[-1][0], node_stack[-1][1] + 1)][0] = 1
+            cost_stack.append(cost_stack[-1] + M[node_stack[-1][1] + 1][node_stack[-1][0]])
+            if cost_stack[-1] <= 0:
+                minimum_stack.append(minimum_stack[-1] + cost_stack[-1] * -1 + 1)
+                cost_stack[-1] = 1
+            else:
+                minimum_stack.append(minimum_stack[-1])
 
             node_stack.append((node_stack[-1][0], node_stack[-1][1] + 1))
             continue
 
         # If this is a full path to the end that has the lowest minimal hp so far, update the minimum hp.
         if node_stack[-1][0] == len(M[0]) - 1 and node_stack[-1][1] == len(M) - 1 and \
-                nodes[(node_stack[-1][0], node_stack[-1][1])][1] > minimum_hp:
-            minimum_hp = nodes[(node_stack[-1][0], node_stack[-1][1])][1]
+                minimum_stack[-1] < minimum_hp:
+            minimum_hp = minimum_stack[-1]
 
         node_stack.pop()
+        minimum_stack.pop()
+        cost_stack.pop()
 
     return minimum_hp
 
